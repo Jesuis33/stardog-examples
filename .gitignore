@@ -12,6 +12,7 @@ examples/.idea/misc.xml
 examples/.idea/modules.xml
 examples/.idea/vcs.xml
 examples/.idea/workspace.xml
+<<<<<<< HEAD
 examples/*/out
 
 **/.DS_Store
@@ -372,3 +373,8 @@ MigrationBackup/
 
 # DotNet Sample specific files
 Ontologies.g.cs
+=======
+
+.DS_Store/
+examples/.DS_Store/
+>>>>>>> upstream/feature/indexAccess
