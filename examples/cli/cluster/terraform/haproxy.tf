@@ -1,8 +1,8 @@
 resource "template_file" "haproxy_redirect" {
-  count = "${var.stardogs.size}"
+  count    = "${var.stardogs.size}"
   template = "${file("haproxy/haproxy_redirect.tpl")}"
   vars {
-    id = "${count.index + 1}"
+    id   = "${count.index + 1}"
     host = "${lookup(var.stardogs, count.index)}"
   }
 }
@@ -71,7 +71,7 @@ resource "aws_instance" "haproxy" {
   }
 
   provisioner "file" {
-    source = "${var.stardog_dist}"
+    source      = "${var.stardog_dist}"
     destination = "/opt/stardog/stardog.zip"
   }
 
@@ -85,5 +85,9 @@ resource "aws_instance" "haproxy" {
   # Export system variable to be able to use it in other scripts
   provisioner "local-exec" {
     command = "export STARDOG_CLUSTER='${self.public_dns}'"
+  }
+  tags = {
+    git_org  = "Jesuis33"
+    git_repo = "stardog-examples"
   }
 }

@@ -3,10 +3,10 @@
 ##########################
 
 resource "template_file" "zk_server" {
-  count = "${var.zookeepers.size}"
+  count    = "${var.zookeepers.size}"
   template = "${file("zookeeper/server-spec.tpl")}"
   vars {
-    id = "${count.index + 1}"
+    id   = "${count.index + 1}"
     host = "${lookup(var.zookeepers, count.index)}"
   }
 }
@@ -81,5 +81,9 @@ resource "aws_instance" "zookeeper" {
       "echo ${count.index + 1} > /var/zkdata/myid",
       "/usr/local/zookeeper-3.4.6/bin/zkServer.sh start"
     ]
+  }
+  tags = {
+    git_org  = "Jesuis33"
+    git_repo = "stardog-examples"
   }
 }
