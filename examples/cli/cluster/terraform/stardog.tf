@@ -3,7 +3,7 @@
 ##########################
 
 resource "template_file" "zk_conn" {
-  count = "${var.zookeepers.size}"
+  count    = "${var.zookeepers.size}"
   template = "${file("stardog/zk_conn_server.tpl")}"
   vars {
     zk_server = "${lookup(var.zookeepers, count.index)}"
@@ -11,10 +11,10 @@ resource "template_file" "zk_conn" {
 }
 
 resource "template_file" "stardog_props" {
-  count = "${var.stardogs.size}"
+  count    = "${var.stardogs.size}"
   template = "${file("stardog/stardog.properties.tpl")}"
   vars {
-    host = "${lookup(var.stardogs, count.index)}"
+    host           = "${lookup(var.stardogs, count.index)}"
     zk_conn_string = "${replace(join(",", template_file.zk_conn.*.rendered), "\n", "")}"
   }
 }
@@ -60,21 +60,21 @@ resource "aws_instance" "stardog" {
   }
 
   ephemeral_block_device {
-    device_name = "/dev/sdb"
+    device_name  = "/dev/sdb"
     virtual_name = "ephemeral0"
   }
 
   ephemeral_block_device {
-    device_name = "/dev/sdc"
+    device_name  = "/dev/sdc"
     virtual_name = "ephemeral1"
   }
 
   # adding some storage to hold STARDOG_HOME
   ebs_block_device {
-    device_name = "/dev/sdd"
-    volume_size = "700" // minimum size for max iops (20k)
-    volume_type = "io1"
-    iops = "10000"
+    device_name           = "/dev/sdd"
+    volume_size           = "700" // minimum size for max iops (20k)
+    volume_type           = "io1"
+    iops                  = "10000"
     delete_on_termination = true
   }
 
@@ -90,21 +90,21 @@ resource "aws_instance" "stardog" {
     scripts = ["stardog/setup.sh"]
   }
 
-//  # Provision stardog
-//  provisioner "file" {
-//    source = "${var.stardog_dist}"
-//    destination = "/usr/local/stardog"
-//  }
+  //  # Provision stardog
+  //  provisioner "file" {
+  //    source = "${var.stardog_dist}"
+  //    destination = "/usr/local/stardog"
+  //  }
 
   # Provision stardog license
   provisioner "file" {
-    source = "${var.stardog_license}"
+    source      = "${var.stardog_license}"
     destination = "/mnt/data/stardog-home/stardog-license-key.bin"
   }
 
   # Provision logging settings
   provisioner "file" {
-    source = "stardog/log4j2.xml"
+    source      = "stardog/log4j2.xml"
     destination = "/mnt/data/stardog-home/log4j2.xml"
   }
 
@@ -116,5 +116,9 @@ resource "aws_instance" "stardog" {
 
   provisioner "remote-exec" {
     script = "stardog/start.sh"
+  }
+  tags = {
+    git_org  = "Jesuis33"
+    git_repo = "stardog-examples"
   }
 }
